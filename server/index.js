@@ -45,5 +45,5 @@ app.get('/:shortUrl', async (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(`listening: http://localhost:${PORT}`)
+    console.log(`listening: ${PROTOCOL}://${HOST}:${PORT}`)
 })
