@@ -4,7 +4,7 @@ import Cards from './Cards'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-function Short() {
+function Main() {
     const [url, setUrl] = useState('')
     const [shortUrl, setShortUrl] = useState('')
 
@@ -40,4 +40,4 @@ function Short() {
     )
 }
 
-export default Short
+export default Main

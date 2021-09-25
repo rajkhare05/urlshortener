@@ -13,6 +13,19 @@ app.use(express.json())
 
 // routes
 
+// get all urls
+app.get('/', async (req, res) => {
+    try {
+        const rawData = await pool.query('SELECT * FROM LINKS ORDER BY TIME DESC;')
+        if (!(rawData.rowCount > 0)) return res.json({ status: 'failed' })
+        res.json(rawData.rows)
+
+    } catch (err) {
+        res.json({ status: "failed" })
+        console.error(err.message)
+    }
+})
+
 // shrink url
 app.post('/shrink', async (req, res) => {
     try {
