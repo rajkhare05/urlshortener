@@ -1,11 +1,13 @@
 import React from 'react';
 import './App.css';
-import Form from './components/Form';
+import Header from './components/Header';
+import Short from './components/Short';
 
 function App() {
   return (
     <div className="App">
-      <Form />
+      <Header />
+      <Short />
     </div>
   );
 }

@@ -38,8 +38,8 @@ app.get('/:shortUrl', async (req, res) => {
     const rawData = await pool.query(
         'SELECT ORIGINAL FROM LINKS WHERE SHORT=$1;'
         , [shortUrl])
+    if (!(rawData.rowCount > 0)) return res.json({ url: null })
     const { original } = rawData.rows[0]
-    if (original == null) return res.redirect('https://google.com')
     await pool.query('UPDATE LINKS SET CLICKS = CLICKS + 1')
     res.redirect(original)
 })
