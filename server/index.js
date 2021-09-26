@@ -49,11 +49,13 @@ app.post('/shrink', async (req, res) => {
 app.get('/:shortUrl', async (req, res) => {
     const shortUrl = req.params.shortUrl
     const rawData = await pool.query(
-        'SELECT ORIGINAL FROM LINKS WHERE SHORT=$1;'
+        'SELECT ORIGINAL FROM LINKS WHERE SHORT = $1;'
         , [shortUrl])
     if (!(rawData.rowCount > 0)) return res.json({ url: null })
     const { original } = rawData.rows[0]
-    await pool.query('UPDATE LINKS SET CLICKS = CLICKS + 1')
+    await pool.query(
+        'UPDATE LINKS SET CLICKS = CLICKS + 1 WHERE SHORT = $1'
+    , [shortUrl])
     res.redirect(original)
 })
 

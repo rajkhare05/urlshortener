@@ -4,10 +4,17 @@ import Table from 'react-bootstrap/Table'
 
 function LinkBoard() {
     const [links, setLinks] = useState([])
+    const [status, setStatus] = useState(false)
     useEffect(() => {
         axios.get('http://localhost:4000/')
             .then(res => {
-                setLinks(res.data)
+                if (res.data.status === 'failed') {
+                    setStatus(false)
+                }
+                else {
+                    setLinks(res.data)
+                    setStatus(true)
+                }
             })
             .catch(err => {
                 console.error(err)
@@ -15,7 +22,7 @@ function LinkBoard() {
     }, [])
 
     return (
-        <Table striped bordered hover>
+        <Table responsive striped bordered hover>
             <thead>
                 <tr>
                     <th>Clicks</th>
@@ -23,15 +30,18 @@ function LinkBoard() {
                     <th>Original</th>
                 </tr>
             </thead>
-            <tbody>
-                {links.map(data =>
-                    <tr key={data.short}>
-                        <td>{data.clicks}</td>
-                        <td>{data.short}</td>
-                        <td>{data.original}</td>
-                    </tr>
-                )}
-            </tbody>
+            {
+                {status} &&
+                <tbody>
+                    {links.map(data =>
+                        <tr key={data.short}>
+                            <td>{data.clicks}</td>
+                            <td>{data.short}</td>
+                            <td>{data.original}</td>
+                        </tr>
+                    )}
+                </tbody>
+            }
         </Table>
     )
 }

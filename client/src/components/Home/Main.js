@@ -24,18 +24,20 @@ function Main() {
     return (
         <div className='container'>
             <Form onSubmit={submitHandler}>
-                <Form.Control 
-                    className='mt-3 text-center' 
-                    value={url} 
+                <Form.Control
+                    className='mt-3 text-center'
+                    value={url}
                     onChange={e => setUrl(e.target.value)}
-                    type='text' 
-                    placeholder='Paste your url here' 
+                    type='text'
+                    placeholder='Paste your url here'
                     required />
-                <Button className='mt-3' variant='primary' type='submit'>
-                    Shrink
-                </Button>
+                <div className='d-flex justify-content-center'>
+                    <Button className='mt-3' variant='primary' type='submit'>
+                        Shrink
+                    </Button>
+                </div>
             </Form>
-            {shortUrl && <Cards shrinkedUrl={shortUrl}/>}
+            {shortUrl && <Cards shrinkedUrl={shortUrl} />}
         </div>
     )
 }
