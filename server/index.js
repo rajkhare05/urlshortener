@@ -15,7 +15,7 @@ app.set('json spaces', 1)
 // routes
 
 // get all urls
-app.get('/', async (req, res) => {
+app.get('/links', async (req, res) => {
     try {
         
         const rawData = await pool.query('SELECT * FROM LINKS ORDER BY TIME DESC;')
