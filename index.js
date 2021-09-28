@@ -47,7 +47,7 @@ app.post('/shrink', async (req, res) => {
         , [short, original])
 
         res.json({
-            url: `${HOST}:${PORT}/${short}`
+            url: `${HOST}/${short}`
         })
 
     } catch (err) {

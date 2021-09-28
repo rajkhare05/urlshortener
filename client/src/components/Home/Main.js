@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import Cards from './Cards'
 import Form from 'react-bootstrap/Form'
@@ -8,17 +8,6 @@ function Main() {
 
     const [url, setUrl] = useState('')
     const [shortUrl, setShortUrl] = useState('')
-    const [vis, setVis] = useState(false)
-
-    useEffect(() => {
-        const regEx = /^http(s?):\/\/([a-z0-9]+\.)?([a-z0-9]+\.[a-z]+)+(\/(.*))?$/ig
-        
-        if (regEx.test(url)) {
-            setVis(false)
-        } else {
-            setVis(true)
-        }
-    }, [url])
 
     const submitHandler = (e) => {
         e.preventDefault()
@@ -50,7 +39,7 @@ function Main() {
                 />
 
                 <div className='d-flex justify-content-center'>
-                    <Button className='mt-3' variant='primary' type='submit' disabled={vis}>
+                    <Button className='mt-3' variant='primary' type='submit'>
                         Shrink
                     </Button>
                 </div>
