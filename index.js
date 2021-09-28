@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 const pool = require('./database')
 const shrinkUrl = require('./shrinkUrl')
 require('dotenv').config()
@@ -10,12 +11,18 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static(path.resolve(__dirname,'client','build')))
 app.set('json spaces', 1)
 
 // routes
 
 // get all urls
-app.get('/', async (req, res) => {
+
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+})
+
+app.get('/links', async (req, res) => {
     try {
         
         const rawData = await pool.query('SELECT * FROM LINKS ORDER BY TIME DESC;')
