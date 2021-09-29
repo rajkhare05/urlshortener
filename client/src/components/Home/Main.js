@@ -12,7 +12,7 @@ function Main() {
     const submitHandler = (e) => {
         e.preventDefault()
 
-        axios.post('https://theurl.ml/shrink', {
+        axios.post('http://localhost:4000/shrink', {
             original: url
         })
             .then((response) => {

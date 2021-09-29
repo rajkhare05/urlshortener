@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
 })
 
-app.get('/links', async (req, res) => {
+app.get('/all-links', async (req, res) => {
     try {
         
         const rawData = await pool.query('SELECT * FROM LINKS ORDER BY TIME DESC;')
@@ -47,7 +47,7 @@ app.post('/shrink', async (req, res) => {
         , [short, original])
 
         res.json({
-            url: `${HOST}/${short}`
+            url: `${HOST}:${PORT}/${short}`
         })
 
     } catch (err) {
@@ -65,7 +65,7 @@ app.get('/:shortUrl', async (req, res) => {
         'SELECT ORIGINAL FROM LINKS WHERE SHORT = $1;'
     , [shortUrl])
 
-    if (!(rawData.rowCount > 0)) return res.json({ url: null })
+    if (!(rawData.rowCount > 0)) return res.redirect('/')
 
     const { original } = rawData.rows[0]
 
