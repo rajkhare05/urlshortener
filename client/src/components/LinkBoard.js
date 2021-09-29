@@ -6,7 +6,7 @@ function LinkBoard() {
     const [links, setLinks] = useState([])
     const [status, setStatus] = useState(false)
     useEffect(() => {
-        axios.get('http://localhost:4000/links')
+        axios.get('http://localhost:4000/all-links')
             .then(res => {
                 if (res.data.status === 'failed') {
                     setStatus(false)
