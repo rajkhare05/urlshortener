@@ -25,7 +25,7 @@ function About() {
 
                     <Button variant='danger'
                         onClick={() => window.open('https://github.com/rajkhare05/urlshortener', '_blank')}>
-                        Contirbute
+                        Contribute
                         <img src='https://img.icons8.com/fluency-systems-regular/50/000000/external-link.png' style={style} alt='icon-r' />
                     </Button>
                     
