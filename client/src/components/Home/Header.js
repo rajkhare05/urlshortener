@@ -19,9 +19,9 @@ function Header() {
                         <Nav.Link>Home</Nav.Link>
                     </LinkContainer>
 
-                    <LinkContainer to='/links'>
+                    {/* <LinkContainer to='/links'>
                         <Nav.Link>Links</Nav.Link>
-                    </LinkContainer>
+                    </LinkContainer> */}
 
                     <LinkContainer to='/about'>
                         <Nav.Link>About</Nav.Link>

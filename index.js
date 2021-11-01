@@ -5,14 +5,16 @@ const pool = require('./database')
 const shrinkUrl = require('./shrinkUrl')
 require('dotenv').config()
 
-const HOST = process.env.HOST || 'localhost'
-const PORT = process.env.PORT || 4000
 const app = express()
-
 app.use(cors())
 app.use(express.json())
-app.use(express.static(path.resolve(__dirname,'client','build')))
+app.use(express.static(path.resolve(__dirname, 'client', 'build')))
 app.set('json spaces', 1)
+
+const HOST = process.env.REACT_APP_HOST || '127.0.0.1'
+const PORT = process.env.REACT_APP_PORT || 4000
+const URL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_URL : `http://${HOST}` + (PORT === 80 ? `` : `:${PORT}`)
+const TABLE = process.env.TABLE || 'links'
 
 // routes
 
@@ -25,7 +27,7 @@ app.get('/', (req, res) => {
 app.get('/all-links', async (req, res) => {
     try {
         
-        const rawData = await pool.query('SELECT * FROM LINKS ORDER BY TIME DESC;')
+        const rawData = await pool.query(`SELECT * FROM ${TABLE} ORDER BY TIME DESC;`)
         if (!(rawData.rowCount > 0)) return res.json({ status: 'failed' })
         res.json(rawData.rows)
 
@@ -40,14 +42,14 @@ app.post('/shrink', async (req, res) => {
     try {
 
         const { original } = req.body
-        const short = await shrinkUrl()
+        const short = shrinkUrl()
 
         await pool.query(
-            'INSERT INTO LINKS(SHORT, ORIGINAL) VALUES ($1, $2);'
+            `INSERT INTO ${TABLE}(SHORT, ORIGINAL) VALUES ($1, $2);`
         , [short, original])
 
         res.json({
-            url: `${HOST}:${PORT}/${short}`
+            url: `${URL}/${short}`
         })
 
     } catch (err) {
@@ -62,7 +64,7 @@ app.get('/:shortUrl', async (req, res) => {
     const shortUrl = req.params.shortUrl
     
     const rawData = await pool.query(
-        'SELECT ORIGINAL FROM LINKS WHERE SHORT = $1;'
+        `SELECT ORIGINAL FROM ${TABLE} WHERE SHORT = $1;`
     , [shortUrl])
 
     if (!(rawData.rowCount > 0)) return res.redirect('/')
@@ -70,12 +72,12 @@ app.get('/:shortUrl', async (req, res) => {
     const { original } = rawData.rows[0]
 
     await pool.query(
-        'UPDATE LINKS SET CLICKS = CLICKS + 1 WHERE SHORT = $1'
+        `UPDATE ${TABLE} SET CLICKS = CLICKS + 1 WHERE SHORT = $1`
     , [shortUrl])
 
     res.redirect(original)
 })
 
 app.listen(PORT, () => {
-    console.log(`listening: http://${HOST}:${PORT}`)
+    console.log(`listening: ${URL}`)
 })

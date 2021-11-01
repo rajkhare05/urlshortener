@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Table from 'react-bootstrap/Table'
+import dotenv from 'dotenv'
+dotenv.config()
 
 function LinkBoard() {
+    
     const [links, setLinks] = useState([])
     const [status, setStatus] = useState(false)
+    const HOST = process.env.REACT_APP_HOST || '127.0.0.1'
+    const PORT = process.env.REACT_APP_PORT || 4000
+    const URL = process.env.REACT_APP_NODE_ENV === 'production' ? process.env.REACT_APP_URL : `http://${HOST}` + (PORT === 80 ? `` : `:${PORT}`)
+
     useEffect(() => {
-        axios.get('http://localhost:4000/all-links')
+        axios.get(`${URL}/all-links`)
             .then(res => {
                 if (res.data.status === 'failed') {
                     setStatus(false)
@@ -19,7 +26,7 @@ function LinkBoard() {
             .catch(err => {
                 console.error(err)
             })
-    }, [])
+    }, [URL])
 
     return (
         <Table responsive striped bordered hover>
@@ -31,7 +38,7 @@ function LinkBoard() {
                 </tr>
             </thead>
             {
-                {status} &&
+                { status } &&
                 <tbody>
                     {links.map(data =>
                         <tr key={data.short}>
