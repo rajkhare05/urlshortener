@@ -11,9 +11,10 @@ app.use(express.json())
 app.use(express.static(path.resolve(__dirname, 'client', 'build')))
 app.set('json spaces', 1)
 
-const HOST = process.env.HOST || '127.0.0.1'
+const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || 4000
-const URL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_URL : `http://${HOST}` + (PORT === 80 ? `` : `:${PORT}`)
+const NODE_ENV = process.env.NODE_ENV || 'development'
+const URL = NODE_ENV === 'production' ? process.env.REACT_APP_URL : `http://${HOST}` + (PORT === 80 ? `` : `:${PORT}`)
 const TABLE = process.env.TABLE || 'links'
 
 // routes
