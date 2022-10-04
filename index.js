@@ -14,7 +14,7 @@ app.set('json spaces', 1)
 const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || 4000
 const NODE_ENV = process.env.NODE_ENV || 'development'
-const URL = NODE_ENV === 'production' ? process.env.REACT_APP_URL : `http://${HOST}` + (PORT === 80 ? `` : `:${PORT}`)
+const URL = NODE_ENV === 'production' ? process.env.REACT_APP_URL : `https://${HOST}` + (PORT === 80 ? `` : `:${PORT}`)
 const TABLE = process.env.TABLE || 'links'
 
 // routes

@@ -8,7 +8,7 @@ function LinkBoard() {
     const [status, setStatus] = useState(false)
     
     useEffect(() => {
-        axios.get(`https://theurl.ml/all-links`)
+        axios.get(`https://theurl.cf/all-links`)
             .then(res => {
                 if (res.data.status === 'failed') {
                     setStatus(false)
