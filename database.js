@@ -6,7 +6,11 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD || "_dbman_",
     host: process.env.DB_HOST || "localhost",
     port: process.env.DB_PORT || 5432,
-    database: process.env.DATABASE || "shorturls"
+    database: process.env.DATABASE || "shorturls",
+    ssl: {
+        rejectUnauthorized: true,
+        ca: process.env.CA_CERTIFICATE.toString().replace(/\\n/g, '\n')
+    }
 })
 
 module.exports = pool
