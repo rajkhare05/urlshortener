@@ -1,5 +1,5 @@
 const { customAlphabet } = require('nanoid');
-const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const shrinkUrl = customAlphabet(alphabet, 7);
+const characters = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const shrinkUrl = customAlphabet(characters, 9);
 
 module.exports = shrinkUrl

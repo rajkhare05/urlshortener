@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool
 require('dotenv').config()
 
-const pool = new Pool({    
+const pool = new Pool({
     user: process.env.DB_USER || "dbman",
     password: process.env.DB_PASSWORD || "_dbman_",
     host: process.env.DB_HOST || "localhost",
@@ -13,4 +13,11 @@ const pool = new Pool({
     }
 })
 
+process.on('SIGINT', async () => {
+    await pool.end();
+    console.log('Pool closed');
+    process.exit(0);
+})
+
 module.exports = pool
+

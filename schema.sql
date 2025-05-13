@@ -1,10 +1,10 @@
-CREATE DATABASE short_urls;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-\c short_urls;
-
-CREATE TABLE links (
-    short VARCHAR(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS links (
+    id uuid UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
+    short VARCHAR(20) UNIQUE NOT NULL,
     original TEXT NOT NULL,
     clicks INT8 NOT NULL DEFAULT 0,
     time TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+

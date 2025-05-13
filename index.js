@@ -16,28 +16,29 @@ const NODE_ENV = process.env.NODE_ENV || 'development'
 const URL = NODE_ENV === 'production' ? process.env.REACT_APP_URL : `http://localhost` + (PORT === 80 ? `` : `:${PORT}`)
 const TABLE = process.env.TABLE || 'links'
 
-// routes
-
-// get all urls
-
-app.get('/', (req, res) => {
+// Home page
+app.get('/', (_, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
 })
 
-app.get('/all-links', async (req, res) => {
+// List all URLs
+app.get('/all-links', async (_, res) => {
     try {
         
-        const rawData = await pool.query(`SELECT * FROM ${TABLE} ORDER BY TIME DESC;`)
-        if (!(rawData.rowCount > 0)) return res.json({ status: 'failed' })
-        res.json(rawData.rows)
+        const result = await pool.query(`SELECT short, original, clicks, time FROM ${TABLE} ORDER BY TIME DESC;`)
+        const data = result.rowCount
+        if (data && data > 0) {
+            return res.json(result.rows)
+        }
+        return res.json({})
 
     } catch (err) {
-        res.json({ status: "failed" })
+        res.status(500).json({ error : "Error" })
         console.error(err.message)
     }
 })
 
-// shrink url
+// Shrink URL
 app.post('/shrink', async (req, res) => {
     try {
 
@@ -45,39 +46,56 @@ app.post('/shrink', async (req, res) => {
         const short = shrinkUrl()
 
         await pool.query(
-            `INSERT INTO ${TABLE}(SHORT, ORIGINAL) VALUES ($1, $2);`
+            `INSERT INTO ${TABLE}(short, original) VALUES ($1, $2);`
         , [short, original])
 
-        res.json({
+        return res.status(201).json({
             url: `${URL}/${short}`
         })
 
     } catch (err) {
-        res.json({ status: "failed" })
+        res.status(500).json({ error : "Error" })
         console.error(err.message)
     }
 })
 
 // redirect and update clicks
-app.get('/:shortUrl', async (req, res) => {
+app.get('/:keyword', async (req, res) => {
 
-    const shortUrl = req.params.shortUrl
-    
-    const rawData = await pool.query(
-        `SELECT ORIGINAL FROM ${TABLE} WHERE SHORT = $1;`
-    , [shortUrl])
+    const keyword = req.params.keyword
 
-    if (!(rawData.rowCount > 0)) return res.redirect('/')
+    // validate the keyword
+    const regex = new RegExp(/\w{5,9}/)
+    if (regex.test(keyword) && keyword.length <= 9) {
 
-    const { original } = rawData.rows[0]
+        try {
+            // fetch the original URL
+            const result = await pool.query(
+                `SELECT original FROM ${TABLE} WHERE SHORT = $1;`
+                , [keyword])
 
-    await pool.query(
-        `UPDATE ${TABLE} SET CLICKS = CLICKS + 1 WHERE SHORT = $1`
-    , [shortUrl])
+            const rows = result.rowCount
 
-    res.redirect(original)
+            if (rows > 0) {
+                const { original } = result.rows[0]
+
+                // update the clicks 
+                await pool.query(
+                    `UPDATE ${TABLE} SET clicks = clicks + 1 WHERE SHORT = $1`
+                    , [keyword])
+
+                return res.redirect(original)
+            }
+
+        } catch (err) {
+            res.status(500).json({ error : "Error" })
+            console.error(err.message)
+        }
+    }
+    return res.redirect('/')
 })
 
 app.listen(PORT, () => {
     console.log(`listening: ${URL}`)
 })
+
